@@ -2,46 +2,43 @@ namespace DesafioFundamentos.Models
 {
     public class Estacionamento
     {
-        private decimal precoInicial = 0;
-        private decimal precoPorHora = 0;
-        private List<string> veiculos = new List<string>();
+        public decimal PrecoInicial { get; set; }
+        public decimal PrecoPorHora { get; set; }
+
+        public List<Veiculo> VeiculosEstacionados { get; set; }
 
         public Estacionamento(decimal precoInicial, decimal precoPorHora)
         {
-            this.precoInicial = precoInicial;
-            this.precoPorHora = precoPorHora;
+            this.PrecoInicial = precoInicial;
+            this.PrecoPorHora = precoPorHora;
+            this.VeiculosEstacionados = new List<Veiculo>();
         }
 
-        public void AdicionarVeiculo()
+        public void EstacionarVeiculo()
         {
-            // TODO: Pedir para o usuário digitar uma placa (ReadLine) e adicionar na lista "veiculos"
-            // *IMPLEMENTE AQUI*
             Console.WriteLine("Digite a placa do veículo para estacionar:");
+
+            string placa = Console.ReadLine();
+            Veiculo veiculoParaEstacionar = new(placa);
+            VeiculosEstacionados.Add(veiculoParaEstacionar);
         }
 
-        public void RemoverVeiculo()
+        public void RemoverVeiculoDoEstacionamento()
         {
             Console.WriteLine("Digite a placa do veículo para remover:");
+            string placa = Console.ReadLine();
 
-            // Pedir para o usuário digitar a placa e armazenar na variável placa
-            // *IMPLEMENTE AQUI*
-            string placa = "";
-
-            // Verifica se o veículo existe
-            if (veiculos.Any(x => x.ToUpper() == placa.ToUpper()))
+            if (VeiculoEstacionadoExistente(placa))
             {
                 Console.WriteLine("Digite a quantidade de horas que o veículo permaneceu estacionado:");
 
-                // TODO: Pedir para o usuário digitar a quantidade de horas que o veículo permaneceu estacionado,
-                // TODO: Realizar o seguinte cálculo: "precoInicial + precoPorHora * horas" para a variável valorTotal                
-                // *IMPLEMENTE AQUI*
-                int horas = 0;
-                decimal valorTotal = 0; 
+                decimal quantidadeDeHorasEstacionado = int.Parse(Console.ReadLine());
+                decimal valorTotalPorTempoEstacionado = PrecoInicial + PrecoPorHora * quantidadeDeHorasEstacionado;
 
-                // TODO: Remover a placa digitada da lista de veículos
-                // *IMPLEMENTE AQUI*
+                Veiculo veiculoParaRemover = VeiculosEstacionados.FirstOrDefault(veiculoAEncontrar => veiculoAEncontrar.Placa == placa);
+                VeiculosEstacionados.Remove(veiculoParaRemover);
 
-                Console.WriteLine($"O veículo {placa} foi removido e o preço total foi de: R$ {valorTotal}");
+                Console.WriteLine($"O veículo de placa {placa} foi removido e o preço total foi de: R$ {valorTotalPorTempoEstacionado}");
             }
             else
             {
@@ -49,19 +46,24 @@ namespace DesafioFundamentos.Models
             }
         }
 
-        public void ListarVeiculos()
+        public void ListarVeiculosEstacionados()
         {
-            // Verifica se há veículos no estacionamento
-            if (veiculos.Any())
+            if (ExistemVeiculosEstacionados())
             {
                 Console.WriteLine("Os veículos estacionados são:");
-                // TODO: Realizar um laço de repetição, exibindo os veículos estacionados
-                // *IMPLEMENTE AQUI*
+                foreach (Veiculo veiculo in VeiculosEstacionados)
+                    Console.WriteLine(veiculo.Placa);
             }
             else
             {
                 Console.WriteLine("Não há veículos estacionados.");
             }
         }
+
+        private bool VeiculoEstacionadoExistente(string placa)
+            => VeiculosEstacionados.Any(x => x.Placa.ToUpper() == placa.ToUpper());
+
+        private bool ExistemVeiculosEstacionados()
+            => VeiculosEstacionados.Any();
     }
 }
